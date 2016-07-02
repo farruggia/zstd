@@ -47,10 +47,10 @@ SET(ROOT_DIR ../)
 
 # Define library directory, where sources and header files are located
 SET(LIBRARY_DIR ${ROOT_DIR}/lib)
-INCLUDE_DIRECTORIES(${LIBRARY_DIR}/common)
+INCLUDE_DIRECTORIES(${LIBRARY_DIR}/common ${ROOT_DIR}/include/zstd)
 
 # Read file content
-FILE(READ ${LIBRARY_DIR}/common/zstd.h HEADER_CONTENT)
+FILE(READ ${ROOT_DIR}/include/zstd/zstd.h HEADER_CONTENT)
 
 # Parse version
 GetLibraryVersion("${HEADER_CONTENT}" LIBVER_MAJOR LIBVER_MINOR LIBVER_RELEASE)
@@ -80,7 +80,7 @@ SET(Headers
         ${LIBRARY_DIR}/common/mem.h
         ${LIBRARY_DIR}/common/zbuff.h
         ${LIBRARY_DIR}/common/zstd_internal.h
-        ${LIBRARY_DIR}/common/zstd.h
+        ${ROOT_DIR}/include/zstd/zstd.h
         ${LIBRARY_DIR}/dictBuilder/zdict.h)
 
 # Split project to static and shared libraries build
@@ -109,14 +109,8 @@ SET_TARGET_PROPERTIES(
 IF ("${PREFIX}" STREQUAL "")
 		SET(PREFIX /usr/local)
 ENDIF()
-MESSAGE("the variable PREFIX=${PREFIX}")
 SET(INSTALL_LIBRARY_DIR ${PREFIX}/lib)
 SET(INSTALL_INCLUDE_DIR ${PREFIX}/include)
-
-# install target
-INSTALL(FILES ${LIBRARY_DIR}/common/zstd.h ${LIBRARY_DIR}/common/zbuff.h ${LIBRARY_DIR}/dictBuilder/zdict.h DESTINATION ${INSTALL_INCLUDE_DIR})
-INSTALL(TARGETS libzstd_static DESTINATION ${INSTALL_LIBRARY_DIR})
-INSTALL(TARGETS libzstd_shared LIBRARY DESTINATION ${INSTALL_LIBRARY_DIR})
 
 # Create symlinks and setup this files
 SET(SHARED_LIBRARY_LINK ${SHARED_LIBRARY_OUTPUT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -144,6 +138,3 @@ ADD_CUSTOM_COMMAND(TARGET libzstd_shared POST_BUILD
 				COMMAND ln -s ${SHARED_LIBRARY_LINK} ${SHARED_LIBRARY_SYMLINK2}
 				DEPENDS ${SHARED_LIBRARY_LINK_PATH}
 				COMMENT "Generating symbolic link")
-
-INSTALL(FILES ${SHARED_LIBRARY_SYMLINK1_PATH} DESTINATION ${INSTALL_LIBRARY_DIR})
-INSTALL(FILES ${SHARED_LIBRARY_SYMLINK2_PATH} DESTINATION ${INSTALL_LIBRARY_DIR})
