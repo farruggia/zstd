@@ -43,7 +43,7 @@ PROJECT(libzstd)
 SET(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 # Define project root directory
-SET(ROOT_DIR ../../..)
+SET(ROOT_DIR ../)
 
 # Define library directory, where sources and header files are located
 SET(LIBRARY_DIR ${ROOT_DIR}/lib)
